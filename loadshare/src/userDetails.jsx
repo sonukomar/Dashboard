@@ -48,7 +48,7 @@ function UserDetails() {
     }
 
     function createElement(jsonData,element) {
-        // x(element);
+        
         switch(typeof(jsonData[element])) {
             case 'boolean':
                 elements.push (
@@ -88,7 +88,43 @@ function UserDetails() {
                     )
                 }
                 else if(Array.isArray(jsonData[element]) && typeof(data[element][0]) === 'object') {
-                    
+                    debugger;
+                    jsonData[element].forEach(item => {
+                        console.log(item)
+                        Object.keys(item).forEach(element => {
+                            switch(typeof(item[element])){
+
+                                case 'string':
+                                        elements.push (
+                                            <Form.Group controlId="formBasicPhone">
+                                                <Form.Label>{element}</Form.Label>
+                                                <Form.Control type="text" placeholder={element} name={element} value={item[element]} onChange={handleInputChange}/>
+                                            </Form.Group>
+                                        )
+                                        break;
+    
+                                case 'number':        
+                                        elements.push  (
+                                            <Form.Group controlId="formBasicId">
+                                                <Form.Label>{element}</Form.Label>
+                                                <Form.Control type="text" placeholder={element} value={item[element]} disabled/>
+                                            </Form.Group>  
+                                        )  
+                                break;
+    
+                                case 'boolean':
+                                        elements.push (
+                                            <Form.Group controlId="formBasicActive">
+                                                <Form.Label>{element}</Form.Label>
+                                                <Form.Control type="checkbox" placeholder="Name" name={element}  checked={item[element]} onChange={handleInputChange}/>
+                                            </Form.Group>
+                                        )
+                                break;
+                            }
+                        })
+                  
+    
+                    })
                 }
                 else{
                     Object.keys(jsonData[element]).forEach(innerElement => {
@@ -114,16 +150,8 @@ function UserDetails() {
     }
 
       function findElement(jsonData) {
-          let secondlevel = [];
         Object.keys(jsonData).forEach(element => {
-            // if(typeof(jsonData[element]) === 'object' && Array.isArray(jsonData[element] === true)){
-            //     secondlevel.push(element);
-            // }
-            // else{
                 createElement(jsonData,element);
-            // }
-            
-            
         });
         return elements;
         
@@ -143,7 +171,14 @@ function UserDetails() {
 
       function createCustomerList() {}
 
-      function createServiceList(){}
+      function addNewElement(){
+          
+        var key = '<span>Key: <input type="text">\r\n';
+        document.getElementById('new').innerHTML += key; 
+
+        var value = '<span>value: <input type="text"></span>\r\n';
+        document.getElementById('new').innerHTML += value; 
+      }
     
     return(
         <div className='container-fluid'>
@@ -154,9 +189,15 @@ function UserDetails() {
                 <div className="col-md-5">
                 <Form onSubmit={handleFormSubmit}>
                     {findElement(data)}
-                  
-                   
+                    <div id="new">
 
+                    </div>
+                  
+                   <hr />
+                    <Button variant="info"  onClick={addNewElement}>
+                    Add New Element
+                    </Button>
+                    <br /><br /><br />
                     <Button variant="info" type="submit" onSubmit={handleFormSubmit}>
                     Submit
                     </Button>
